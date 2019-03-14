@@ -3,6 +3,7 @@ import ckan.plugins.toolkit as toolkit
 from ckan.lib.plugins import DefaultTranslation
 from ckanext.sixodp_showcasesubmit import helpers
 
+
 class Sixodp_ShowcasesubmitPlugin(plugins.SingletonPlugin, DefaultTranslation):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IConfigurable)

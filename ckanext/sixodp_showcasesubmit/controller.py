@@ -9,7 +9,7 @@ import json
 import urllib
 import re
 import ckan.lib.navl.dictization_functions as dict_fns
-from ckan.common import _, c, request, response
+from ckan.common import _, request, response
 from ckan.common import config
 from ckan.lib.mailer import mail_recipient
 
@@ -27,8 +27,10 @@ clean_dict = logic.clean_dict
 tuplize_dict = logic.tuplize_dict
 parse_params = logic.parse_params
 
+
 def index_template():
     return 'sixodp_showcasesubmit/base_form_page.html'
+
 
 def validateReCaptcha(recaptcha_response):
     response_data_dict = {}
@@ -44,9 +46,9 @@ def validateReCaptcha(recaptcha_response):
         response_data_dict = json.loads(connection.getresponse().read())
         connection.close()
 
-        if(response_data_dict.get('success') != True):
+        if response_data_dict.get('success') is not True:
             raise ValidationError('Google reCaptcha validation failed')
-    except Exception, e:
+    except Exception:
         log.error('Connection to Google reCaptcha API failed')
         raise ValidationError('Connection to Google reCaptcha API failed, unable to validate captcha')
 
@@ -69,7 +71,6 @@ class Sixodp_ShowcasesubmitController(p.toolkit.BaseController):
         vars = {'data': {}, 'errors': {},
                 'error_summary': {}, 'message': None}
         return render(index_template(), extra_vars=vars)
-
 
     @staticmethod
     def _submit():
@@ -104,12 +105,13 @@ class Sixodp_ShowcasesubmitController(p.toolkit.BaseController):
 
                 for package_name in datasets_to_link:
                     association_dict = {"showcase_id": new_showcase.get('id'),
-                                 "package_id": package_name}
+                                        "package_id": package_name}
                     try:
                         get_action('ckanext_showcase_package_association_create')(
                             context, association_dict)
-                    except:
-                        new_showcase['notes_translated-fi'] += '\n\n' + _('N.B. The following dataset could not be automatically linked') + ': ' + package_name
+                    except Exception:
+                        new_showcase['notes_translated-fi'] += '\n\n' + _(
+                            'N.B. The following dataset could not be automatically linked') + ': ' + package_name
                         get_action('ckanext_showcase_update')(context, new_showcase)
 
         except NotAuthorized:
@@ -122,11 +124,11 @@ class Sixodp_ShowcasesubmitController(p.toolkit.BaseController):
 
         sendNewShowcaseNotifications(data_dict.get('name'))
 
-        return {}, {}, {}, { 'class': 'success', 'text':  _('Showcase submitted successfully')}
+        return {}, {}, {}, {'class': 'success', 'text': _('Showcase submitted successfully')}
 
     def ajax_submit(self):
         data, errors, error_summary, message = self._submit()
-        data = flatten_to_string_key({ 'data': data, 'errors': errors, 'error_summary': error_summary, 'message': message })
+        data = flatten_to_string_key({'data': data, 'errors': errors, 'error_summary': error_summary, 'message': message})
         response.headers['Content-Type'] = 'application/json;charset=utf-8'
         return h.json.dumps(data)
 
@@ -135,4 +137,3 @@ class Sixodp_ShowcasesubmitController(p.toolkit.BaseController):
         vars = {'data': data, 'errors': errors,
                 'error_summary': error_summary, 'message': message}
         return render(index_template(), extra_vars=vars)
-
