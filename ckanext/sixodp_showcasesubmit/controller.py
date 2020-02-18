@@ -85,6 +85,7 @@ class Sixodp_ShowcasesubmitController(p.toolkit.BaseController):
             data_dict = clean_dict(dict_fns.unflatten(
                 tuplize_dict(parse_params(request.POST))))
 
+            data_dict['title_translated'] = {'fi': data_dict.get('title')}
             data_dict['type'] = 'showcase'
             data_dict['name'] = re.sub('[^a-z0-9]+', '', data_dict.get('title'))
             data_dict['featured'] = False
