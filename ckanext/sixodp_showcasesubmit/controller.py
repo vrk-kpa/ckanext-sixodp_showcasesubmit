@@ -78,6 +78,9 @@ class Sixodp_ShowcasesubmitController(p.toolkit.BaseController):
             username = config.get('ckanext.sixodp_showcasesubmit.creating_user_username')
             user = model.User.get(username)
 
+            if not user:
+                abort(403, _('There is a misconfiguration in the service, please contact admins.'))
+
             context = {'model': model, 'session': model.Session,
                        'user': user.id, 'auth_user_obj': user.id,
                        'save': 'save' in request.params}
@@ -111,13 +114,13 @@ class Sixodp_ShowcasesubmitController(p.toolkit.BaseController):
                         get_action('ckanext_showcase_package_association_create')(
                             context, association_dict)
                     except Exception:
-                        new_showcase['notes_translated-fi'] += '\n\n' + _(
+                        new_showcase['notes_translated']['fi'] = new_showcase.get('notes_translated', {'fi': ''}).get('fi', '') + '\n\n' + _(
                             'N.B. The following dataset could not be automatically linked') + ': ' + package_name
                         get_action('ckanext_showcase_update')(context, new_showcase)
 
         except NotAuthorized:
             abort(403, _('Unauthorized to create a package'))
-        except ValidationError, e:
+        except ValidationError as e:
             errors = e.error_dict
             error_summary = e.error_summary
             data_dict['state'] = 'none'
