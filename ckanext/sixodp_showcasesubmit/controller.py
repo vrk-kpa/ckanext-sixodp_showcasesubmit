@@ -114,8 +114,9 @@ class Sixodp_ShowcasesubmitController(p.toolkit.BaseController):
                         get_action('ckanext_showcase_package_association_create')(
                             context, association_dict)
                     except Exception:
-                        new_showcase['notes_translated']['fi'] = new_showcase.get('notes_translated', {'fi': ''}).get('fi', '') + '\n\n' + _(
-                            'N.B. The following dataset could not be automatically linked') + ': ' + package_name
+                        new_showcase['notes_translated']['fi'] = \
+                            new_showcase.get('notes_translated', {'fi': ''}).get('fi', '') + '\n\n' + _(
+                                'N.B. The following dataset could not be automatically linked') + ': ' + package_name
                         get_action('ckanext_showcase_update')(context, new_showcase)
 
         except NotAuthorized:
