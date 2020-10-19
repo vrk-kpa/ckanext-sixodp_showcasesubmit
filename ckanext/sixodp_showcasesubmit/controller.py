@@ -11,7 +11,7 @@ import re
 import ckan.lib.navl.dictization_functions as dict_fns
 from ckan.common import _, request, response
 from ckan.common import config
-from ckan.lib.mailer import mail_recipient
+from ckan.lib.mailer import mail_recipient, MailerException
 
 log = logging.getLogger(__name__)
 
@@ -61,9 +61,12 @@ def sendNewShowcaseNotifications(showcase_name):
 
     message_body = _('A user has submitted a new showcase') + ': ' + showcase_url
 
-    for email in recipient_emails:
-        mail_recipient("", email, _('New showcase notification'), message_body)
-
+    try:
+        for email in recipient_emails:
+            mail_recipient("", email, _('New showcase notification'), message_body)
+    except MailerException as e:
+        h.flash_error(_("Failed to send email notification"))
+        log.error('Error sending email: %s', e)
 
 class Sixodp_ShowcasesubmitController(p.toolkit.BaseController):
 
