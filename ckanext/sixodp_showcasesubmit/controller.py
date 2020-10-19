@@ -82,7 +82,7 @@ class Sixodp_ShowcasesubmitController(p.toolkit.BaseController):
                 abort(403, _('There is a misconfiguration in the service, please contact admins.'))
 
             context = {'model': model, 'session': model.Session,
-                       'user': user.id, 'auth_user_obj': user.id,
+                       'user': user.id, 'auth_user_obj': user,
                        'save': 'save' in request.params}
 
             data_dict = clean_dict(dict_fns.unflatten(
