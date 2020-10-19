@@ -68,6 +68,7 @@ def sendNewShowcaseNotifications(showcase_name):
         h.flash_error(_("Failed to send email notification"))
         log.error('Error sending email: %s', e)
 
+
 class Sixodp_ShowcasesubmitController(p.toolkit.BaseController):
 
     def index(self):
