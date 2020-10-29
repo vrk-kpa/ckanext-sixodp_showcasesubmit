@@ -98,7 +98,7 @@ class Sixodp_ShowcasesubmitController(p.toolkit.BaseController):
             data_dict['featured'] = False
             data_dict['archived'] = False
             data_dict['private'] = True
-            data_dict['category'] = {
+            data_dict['keywords'] = {
                 'fi': ['Ilmoitetut'],
                 'en': [],
                 'sv': []
