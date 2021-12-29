@@ -3,13 +3,14 @@ import ckan.plugins.toolkit as toolkit
 import six
 from ckan.lib.plugins import DefaultTranslation
 from ckanext.sixodp_showcasesubmit import helpers
+from . import views
 
 
 class Sixodp_ShowcasesubmitPlugin(plugins.SingletonPlugin, DefaultTranslation):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IConfigurable)
-    plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.ITemplateHelpers)
+    plugins.implements(plugins.IBlueprint)
     if toolkit.check_ckan_version(min_version='2.5.0'):
         plugins.implements(plugins.ITranslation, inherit=True)
 
@@ -48,22 +49,12 @@ class Sixodp_ShowcasesubmitPlugin(plugins.SingletonPlugin, DefaultTranslation):
                     )
                 )
 
-    # IRoutes
-
-    def before_map(self, map):
-        map.connect('/submit-showcase',
-                    controller='ckanext.sixodp_showcasesubmit.controller:Sixodp_ShowcasesubmitController',
-                    action='index',
-                    conditions=dict(method=['GET']))
-
-        map.connect('/submit-showcase',
-                    controller='ckanext.sixodp_showcasesubmit.controller:Sixodp_ShowcasesubmitController',
-                    action='submit',
-                    conditions=dict(method=['POST']))
-
-        return map
-
     # ITemplateHelpers
 
     def get_helpers(self):
         return {'get_showcasesubmit_recaptcha_sitekey': helpers.get_showcasesubmit_recaptcha_sitekey}
+
+    # IBlueprint
+
+    def get_blueprint(self):
+        return views.get_blueprint()
