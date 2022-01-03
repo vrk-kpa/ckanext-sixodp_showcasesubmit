@@ -52,7 +52,7 @@ def sendNewShowcaseNotifications(showcase_name):
         for email in recipient_emails:
             toolkit.mail_recipient("", email, toolkit._('New showcase notification'), message_body)
     except MailerException as e:
-        h.flash_error(toolkit._("Failed to send email notification"))
+        toolkit.h.flash_error(toolkit._("Failed to send email notification"))
         log.error('Error sending email: %s', e)
 
 
@@ -141,7 +141,7 @@ class ShowcaseSubmitView(MethodView):
         data, errors, error_summary, message = _submit()
         data = flatten_to_string_key({'data': data, 'errors': errors, 'error_summary': error_summary, 'message': message})
         response.headers['Content-Type'] = 'application/json;charset=utf-8'
-        return h.json.dumps(data)
+        return json.dumps(data)
 
 
 showcasesubmit.add_url_rule('/submit-showcase', view_func=ShowcaseSubmitView.as_view('submit'))
