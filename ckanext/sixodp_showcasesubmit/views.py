@@ -17,6 +17,7 @@ showcasesubmit = Blueprint('showcasesubmit', __name__)
 def get_blueprint():
     return [showcasesubmit]
 
+
 def index_template():
     return 'sixodp_showcasesubmit/base_form_page.html'
 
@@ -64,17 +65,12 @@ class ShowcaseSubmitView(MethodView):
         return toolkit.render(index_template(), extra_vars=vars)
 
     def post(self):
-        try:
-            data, errors, error_summary, message = self._submit()
+        data, errors, error_summary, message = self._submit()
 
-            vars = {'data': data, 'errors': errors,
-                    'error_summary': error_summary, 'message': message,
-                    'dataset_type': 'showcase'}
-            return toolkit.render(index_template(), extra_vars=vars)
-        except:
-            import traceback
-            traceback.print_exc()
-            raise
+        vars = {'data': data, 'errors': errors,
+                'error_summary': error_summary, 'message': message,
+                'dataset_type': 'showcase'}
+        return toolkit.render(index_template(), extra_vars=vars)
 
     def _submit(self):
         try:
@@ -89,8 +85,12 @@ class ShowcaseSubmitView(MethodView):
                        'save': 'save' in toolkit.request.form}
 
             data_dict = dict(toolkit.request.form)
-            #data_dict = clean_dict(dict_fns.unflatten(
-                #tuplize_dict(parse_params(request.POST))))
+            upload_clear_field_format = 'clear_{}'.format
+            for upload_field, upload in toolkit.request.files.items():
+                if upload:
+                    data_dict[upload_field] = upload
+                else:
+                    data_dict[upload_clear_field_format(upload_field)] = True
 
             data_dict['title_translated'] = {'fi': data_dict.get('title')}
             data_dict['type'] = 'showcase'
@@ -126,8 +126,6 @@ class ShowcaseSubmitView(MethodView):
         except toolkit.NotAuthorized:
             toolkit.abort(403, toolkit._('Unauthorized to create a package'))
         except toolkit.ValidationError as e:
-            import traceback
-            traceback.print_exc()
             errors = e.error_dict
             error_summary = e.error_summary
             data_dict['state'] = 'none'
@@ -136,12 +134,6 @@ class ShowcaseSubmitView(MethodView):
         sendNewShowcaseNotifications(data_dict.get('name'))
 
         return {}, {}, {}, {'class': 'success', 'text': toolkit._('Showcase submitted successfully')}
-
-    def ajax_submit(self):
-        data, errors, error_summary, message = _submit()
-        data = flatten_to_string_key({'data': data, 'errors': errors, 'error_summary': error_summary, 'message': message})
-        response.headers['Content-Type'] = 'application/json;charset=utf-8'
-        return json.dumps(data)
 
 
 showcasesubmit.add_url_rule('/submit-showcase', view_func=ShowcaseSubmitView.as_view('submit'))
