@@ -1,0 +1,17 @@
+version: 1
+groups:
+  - annotation: Showcase submit settings
+    options:
+      - key: ckanext.sixodp_showcasesubmit.creating_user_username
+        description: |
+          Username which is used when showcases are created
+        example: admin
+      - key: ckanext.sixodp_showcasesubmit.recaptcha_sitekey
+        description: |
+          Recaptcha sitekey used in the form
+      - key: ckanext.sixodp_showcasesubmit.recaptcha_secret
+        description: |
+          Recaptcha secret used to validate the recaptcha submit
+      - key: ckanext.sixodp_showcasesubmit.recipient_emails
+        description: |
+          Email addresses that receive notification about new showcase

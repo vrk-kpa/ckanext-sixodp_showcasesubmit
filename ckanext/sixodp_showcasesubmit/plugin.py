@@ -6,6 +6,7 @@ from ckanext.sixodp_showcasesubmit import helpers
 from . import views
 
 
+@toolkit.blanket.config_declarations
 class Sixodp_ShowcasesubmitPlugin(plugins.SingletonPlugin, DefaultTranslation):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IConfigurable)
@@ -38,7 +39,7 @@ class Sixodp_ShowcasesubmitPlugin(plugins.SingletonPlugin, DefaultTranslation):
             'ckanext.sixodp_showcasesubmit.creating_user_username',
             'ckanext.sixodp_showcasesubmit.recaptcha_sitekey',
             'ckanext.sixodp_showcasesubmit.recaptcha_secret',
-            'ckanext.sixodp_showcasesubmit.recipient_emails'
+            'ckanext.sixodp_showcasesubmit.recipient_emails' 
         )
 
         for key in required_keys:
